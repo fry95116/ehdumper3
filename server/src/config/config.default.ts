@@ -5,7 +5,8 @@ export default {
   keys: '1759241581177_1055',
   koa: {
     port: 7001,
-  },typeorm: {
+  }, 
+  typeorm: {
     dataSource: {
       default: {
         /**
