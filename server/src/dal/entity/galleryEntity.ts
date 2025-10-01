@@ -8,11 +8,11 @@ export class GalleryEntity extends BaseEntity {
   galleryId: string;
 
   @Index()
-  @Column({ name: 'g_id', type: 'varchar', length: 191 })
-  gId: string;
+  @Column({ type: 'varchar', length: 191 })
+  ehGalleyId: string;
 
-  @Column({ name: 'g_hash', type: 'varchar', length: 255, default: '' })
-  gHash: string;
+  @Column({ type: 'varchar', length: 255, default: '' })
+  ehGalleryHash: string;
 
   @Column({ type: 'varchar', length: 2048 })
   url: string;
@@ -22,7 +22,7 @@ export class GalleryEntity extends BaseEntity {
   name: string;
 
   @Index()
-  @Column({ name: 'name_jp', type: 'varchar', length: 2048, default: '' })
+  @Column({ type: 'varchar', length: 2048, default: '' })
   nameJp: string;
 
   @Index()
@@ -41,4 +41,7 @@ export class GalleryEntity extends BaseEntity {
   @Index()
   @Column({ type: 'varchar', length: 191 })
   language: string;
+
+  @Column({ type: 'varchar', length: 2048, default: '' })
+  sourceUrl: string;
 }

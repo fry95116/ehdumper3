@@ -1,10 +1,10 @@
-import { Provide } from "@midwayjs/core";
-import { InjectEntityModel } from "@midwayjs/typeorm";
-import { GalleryEntity } from "../../dal/entity/galleryEntity";
-import { Repository } from "typeorm";
-import { GalleryModel } from "../model/gallery";
-import { assertTruth } from "../../common/utils";
-import { NotFoundError, UpdateDeletedError } from "../../common/error";
+import { Provide } from '@midwayjs/core';
+import { InjectEntityModel } from '@midwayjs/typeorm';
+import { GalleryEntity } from '../../dal/entity/galleryEntity';
+import { Repository } from 'typeorm';
+import { GalleryModel } from '../model/gallery';
+import { assertTruth } from '../../common/utils';
+import { NotFoundError, UpdateDeletedError } from '../../common/error';
 
 @Provide()
 export class GalleryRepository {
@@ -14,8 +14,8 @@ export class GalleryRepository {
   async save(model: GalleryModel) {
     const entity = new GalleryEntity();
     entity.galleryId = model.galleryId;
-    entity.gId = model.gId;
-    entity.gHash = model.gHash;
+    entity.ehGalleyId = model.ehGalleryId;
+    entity.ehGalleryHash = model.ehGalleryHash;
     entity.url = model.url;
     entity.name = model.name;
     entity.nameJp = model.nameJp;
@@ -24,6 +24,7 @@ export class GalleryRepository {
     entity.rating = model.rating;
     entity.length = model.length;
     entity.language = model.language;
+    entity.sourceUrl = model.sourceUrl;
 
     const founded = await this.galleryRepo.findOneBy({
       galleryId: model.galleryId,
@@ -32,13 +33,10 @@ export class GalleryRepository {
       return this.galleryRepo.create(entity);
     }
 
-    assertTruth(
-      !founded.deleted_at,
-      new UpdateDeletedError("gallery", model.galleryId)
-    );
+    assertTruth(!founded.deletedAt, new UpdateDeletedError('gallery', model.galleryId));
     entity.id = founded.id;
-    entity.created_at = founded.created_at;
-    entity.updated_at = new Date();
+    entity.createdAt = founded.createdAt;
+    entity.updatedAt = new Date();
     return this.galleryRepo.save(entity);
   }
 
@@ -46,12 +44,9 @@ export class GalleryRepository {
     const founded = await this.galleryRepo.findOneBy({
       galleryId: model.galleryId,
     });
-    assertTruth(founded, new NotFoundError("gallery", model.galleryId));
-    assertTruth(
-      !founded.deleted_at,
-      new UpdateDeletedError("gallery", model.galleryId)
-    );
-    founded.deleted_at = new Date();
+    assertTruth(founded, new NotFoundError('gallery', model.galleryId));
+    assertTruth(!founded.deletedAt, new UpdateDeletedError('gallery', model.galleryId));
+    founded.deletedAt = new Date();
     await this.galleryRepo.save(founded);
   }
 }

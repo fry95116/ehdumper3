@@ -4,10 +4,10 @@
 export class GalleryModel {
   /** 图库唯一ID */
   public galleryId: string;
-  /** EHentai GID */
-  public gId: string;
-  /** EHentai GHash */
-  public gHash: string;
+  /** EH Gallery ID */
+  public ehGalleryId: string;
+  /** EH Gallery Hash */
+  public ehGalleryHash: string;
   /** 图库页面URL */
   public url: string;
   /** 图库名称（英文） */
@@ -24,4 +24,6 @@ export class GalleryModel {
   public length: string;
   /** 语言（如 "chinese"、"english"） */
   public language: string;
+  /** 采集来源URL */
+  public sourceUrl: string;
 }

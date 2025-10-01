@@ -21,13 +21,7 @@
 //   KEY `idx_gallery_dos_type` (`type`) USING BTREE,
 //   KEY `idx_gallery_dos_language` (`language`) USING BTREE
 // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-import {
-  Column,
-  CreateDateColumn,
-  Index,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 export class BaseEntity {
   @PrimaryGeneratedColumn()
@@ -35,12 +29,12 @@ export class BaseEntity {
 
   @Index()
   @CreateDateColumn({ type: 'datetime', precision: 3, nullable: true })
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({ type: 'datetime', precision: 3, nullable: true })
-  updated_at: Date;
+  updatedAt: Date;
 
   @Index()
   @Column({ type: 'datetime', precision: 3, nullable: true })
-  deleted_at: Date;
+  deletedAt: Date;
 }
