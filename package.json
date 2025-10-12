@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "test2": "nx run server test",
-    "test": "nx run-many -t test"
+    "test": "nx run-many -t test",
+    "clean": "nx run-many -t clean && rm -rf node_modules"
   },
   "private": true,
   "dependencies": {},
