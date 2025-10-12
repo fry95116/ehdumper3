@@ -2,7 +2,10 @@
   "name": "ehdumper3",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "test2": "nx run server test",
+    "test": "nx run-many -t test"
+  },
   "private": true,
   "dependencies": {},
   "devDependencies": {
