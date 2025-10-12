@@ -1,4 +1,4 @@
-import { format } from 'node:util';
+// import { format } from 'node:util';
 
 export class BaseError {
   public errorCode: string;
@@ -14,25 +14,25 @@ export enum RepositoryErrorCode {
   UPDATE_DELETED = 'UPDATE_DELETED',
 }
 
+export class ValidateError extends BaseError {
+  constructor(code: string, msg: string) {
+    super(`VAILDATE_ERROR/${code}`, msg);
+  }
+
+  static required(key: string) {
+    return new ValidateError('REQUIRED', `${key} is required`);
+  }
+}
+
 export class RepositoryError extends BaseError {
-  constructor(
-    code: RepositoryErrorCode,
-    model: string,
-    id: string,
-    msg: string
-  ) {
+  constructor(code: RepositoryErrorCode, model: string, id: string, msg: string) {
     super(`REPOSITORY_ERROR/${code}`, [msg, model, id].join(','));
   }
 }
 
 export class UpdateDeletedError extends RepositoryError {
   constructor(model: string, id: string) {
-    super(
-      RepositoryErrorCode.UPDATE_DELETED,
-      model,
-      id,
-      '禁止更新已删除的记录'
-    );
+    super(RepositoryErrorCode.UPDATE_DELETED, model, id, '禁止更新已删除的记录');
   }
 }
 

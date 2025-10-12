@@ -1,7 +1,7 @@
 import { Column, Entity, Index } from 'typeorm';
 import { BaseEntity } from './baseEntity';
 
-@Index(['type', 'name', 'lowpower'])
+@Index(['type', 'name', 'lowPower'])
 @Index(['type', 'name'])
 @Entity()
 export class TagEntity extends BaseEntity {

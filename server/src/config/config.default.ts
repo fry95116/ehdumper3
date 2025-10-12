@@ -17,7 +17,7 @@ export default {
         port: 3306,
         username: 'root',
         password: 'abc7758258',
-        database: 'ehdumper3_dev',
+        database: 'eh_dumper3_dev',
         synchronize: false, // 如果第一次使用，不存在表，有同步的需求可以写 true，注意会丢数据
         logging: false,
         // 支持如下的扫描形式，为了兼容我们可以同时进行.js和.ts匹配

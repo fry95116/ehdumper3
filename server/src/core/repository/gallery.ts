@@ -9,7 +9,7 @@ import { NotFoundError, UpdateDeletedError } from '../../common/error';
 @Provide()
 export class GalleryRepository {
   @InjectEntityModel(GalleryEntity)
-  galleryRepo: Repository<GalleryEntity>;
+ private readonly galleryRepo: Repository<GalleryEntity>;
 
   async save(model: GalleryModel) {
     const entity = new GalleryEntity();
