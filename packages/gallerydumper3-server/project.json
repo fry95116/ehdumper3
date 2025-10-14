@@ -1,0 +1,19 @@
+{
+  "root": "packages/gallerydumper3-server",
+  "sourceRoot": "packages/gallerydumper3-server/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": { "command": "npm run build", "cwd": "packages/gallerydumper3-server" }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": { "command": "npm test", "cwd": "packages/gallerydumper3-server" }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "command": "npm run lint", "cwd": "packages/gallerydumper3-server" }
+    }
+  }
+}

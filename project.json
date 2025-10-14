@@ -1,0 +1,9 @@
+{
+  "name": "tools",
+  "root": ".",
+  "projectType": "utility",
+  "targets": {
+    "clean-node-modules:dry": { "executor": "nx:run-commands", "options": { "command": "npm run clean:node-modules:dry" } },
+    "clean-node-modules": { "executor": "nx:run-commands", "options": { "command": "npm run clean:node-modules" } }
+  }
+}

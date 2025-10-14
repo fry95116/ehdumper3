@@ -1,60 +1,44 @@
 {
   "version": 1,
   "projects": {
-    "server": {
-      "root": "server",
-      "sourceRoot": "server/src",
+    "gallerydumper3-server": {
+      "root": "packages/gallerydumper3-server",
+      "sourceRoot": "packages/gallerydumper3-server/src",
       "projectType": "application",
       "targets": {
-        "build": {
-          "executor": "nx:run-commands",
-          "options": {
-            "command": "npm run build",
-            "cwd": "server"
-          }
-        },
-        "test": {
-          "executor": "nx:run-commands",
-          "options": {
-            "command": "npm test",
-            "cwd": "server"
-          }
-        },
-        "lint": {
-          "executor": "nx:run-commands",
-          "options": {
-            "command": "npm run lint",
-            "cwd": "server"
-          }
-        }
+        "build": { "executor": "nx:run-commands", "options": { "command": "npm run build", "cwd": "packages/gallerydumper3-server" } },
+        "test": { "executor": "nx:run-commands", "options": { "command": "npm test", "cwd": "packages/gallerydumper3-server" } },
+        "lint": { "executor": "nx:run-commands", "options": { "command": "npm run lint", "cwd": "packages/gallerydumper3-server" } }
       }
     },
-    "ehdumper3-server": {
-      "root": "packages/ehdumper3-server",
-      "sourceRoot": "packages/ehdumper3-server/src",
+    "gallerydumper3-web": {
+      "root": "packages/gallerydumper3-web",
+      "sourceRoot": "packages/gallerydumper3-web/src",
       "projectType": "application",
       "targets": {
-        "build": {
-          "executor": "nx:run-commands",
-          "options": {
-            "command": "npm run build",
-            "cwd": "packages/ehdumper3-server"
-          }
-        },
-        "test": {
-          "executor": "nx:run-commands",
-          "options": {
-            "command": "npm test",
-            "cwd": "packages/ehdumper3-server"
-          }
-        },
-        "lint": {
-          "executor": "nx:run-commands",
-          "options": {
-            "command": "npm run lint",
-            "cwd": "packages/ehdumper3-server"
-          }
-        }
+        "build": { "executor": "nx:run-commands", "options": { "command": "npm run build", "cwd": "packages/gallerydumper3-web" } },
+        "dev": { "executor": "nx:run-commands", "options": { "command": "npm run dev", "cwd": "packages/gallerydumper3-web" } },
+        "start": { "executor": "nx:run-commands", "options": { "command": "npm run start", "cwd": "packages/gallerydumper3-web" } },
+        "lint": { "executor": "nx:run-commands", "options": { "command": "npm run lint", "cwd": "packages/gallerydumper3-web" } }
+      }
+    },
+    "ehdumper3-server-legacy": {
+      "root": "packages/server",
+      "sourceRoot": "packages/server/src",
+      "projectType": "application",
+      "targets": {
+        "build": { "executor": "nx:run-commands", "options": { "command": "npm run build", "cwd": "packages/server" } },
+        "test": { "executor": "nx:run-commands", "options": { "command": "npm test", "cwd": "packages/server" } },
+        "start": { "executor": "nx:run-commands", "options": { "command": "npm run start", "cwd": "packages/server" } },
+        "lint": { "executor": "nx:run-commands", "options": { "command": "npm run lint", "cwd": "packages/server" } }
+      }
+    },
+    "tools": {
+      "root": ".",
+      "projectType": "utility",
+      "targets": {
+        "clean-node-modules:dry": { "executor": "nx:run-commands", "options": { "command": "npm run clean:node-modules:dry" } },
+        "clean-node-modules": { "executor": "nx:run-commands", "options": { "command": "npm run clean:node-modules" } }
       }
     }
   }
