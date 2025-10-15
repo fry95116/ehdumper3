@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "nx run-many -t dev",
-    "format": "nx run-many -t format",
-    "lint": "nx run-many -t lint",
-    "test": "nx run-many -t test",
-    "clean": "nx run-many -t clean && rm -rf node_modules"
+    "dev": "nx run-many -t dev --no-cloud",
+    "format": "nx run-many -t format --no-cloud",
+    "lint": "nx run-many -t lint --no-cloud",
+    "test": "nx run-many -t test --no-cloud",
+    "clean": "nx run-many -t clean && rm -rf node_modules --no-cloud"
   },
   "private": true,
   "devDependencies": {
