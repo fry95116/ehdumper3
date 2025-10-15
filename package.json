@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "dev": "nx run-many -t dev",
     "format": "nx run-many -t format",
     "lint": "nx run-many -t lint",
     "test": "nx run-many -t test",
@@ -14,10 +15,21 @@
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.0",
     "nx": "21.6.4",
-    "prettier": "^3.6.2",
     "tslib": "^2.3.0",
     "typescript": "~5.9.2"
+  },
+  "lint-staged": {
+    "packages/gallerydumper3-web/**/*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write",
+      "npm --prefix packages/gallerydumper3-web run lint --silent"
+    ],
+    "packages/gallerydumper3-server/**/*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write",
+      "npm --prefix packages/gallerydumper3-server run lint --silent"
+    ]
   },
   "workspaces": [
     "packages/*"
