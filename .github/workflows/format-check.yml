@@ -9,6 +9,8 @@ on:
 jobs:
   format-check:
     runs-on: ubuntu-latest
+    env:
+      NX_NO_CLOUD: "true"
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js
