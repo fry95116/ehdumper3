@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MideaService } from './core/service/media.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from '../../common/config';
 
 @Module({
   imports: [TypeOrmModule.forRoot(getConfig().database)],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [MideaService],
 })
-export class AppModule {}
+export class MediaModule {}

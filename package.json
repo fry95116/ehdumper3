@@ -4,10 +4,13 @@
   "license": "MIT",
   "scripts": {
     "dev": "nx run-many -t dev",
+    "dev:web": "nx run gallerydumper3-web:dev",
     "format": "nx run-many -t format",
     "lint": "nx run-many -t lint",
     "test": "nx run-many -t test",
-    "clean": "nx run-many -t clean && rm -rf node_modules"
+    "clean": "nx run-many -t clean && rm -rf node_modules",
+    "i:web": "npm install --prefix packages/gallerydumper3-web",
+    "i:server": "npm install --prefix packages/gallerydumper3-server"
   },
   "private": true,
   "devDependencies": {
