@@ -3,6 +3,7 @@ import { ArrowLeft, Image, List } from '../icon';
 import type { CommonProps } from './common';
 import { useBoolean, useResponsive } from 'ahooks';
 import { Drawer, DrawerHeader, DrawerItems } from 'flowbite-react';
+import { Link } from '@tanstack/react-router';
 
 const Header: React.FC<{ onNavClick?: () => void }> = (props) => {
   return (
@@ -25,21 +26,30 @@ const Header: React.FC<{ onNavClick?: () => void }> = (props) => {
 };
 
 const Menu: React.FC<{ showTitle?: boolean; className?: string }> = (props) => {
-  const menuItems = ['测试1', '测试2', '测试3', '测试4'].map((item) => (
-    <div
-      key={item}
+  const menuConfig: Array<{
+    to: React.ComponentProps<typeof Link>['to'];
+    title: string;
+  }> = [
+    { to: '/', title: '测试1' },
+    { to: '/copy', title: '测试1' },
+    { to: '/copy2', title: '测试1' },
+  ];
+  const menuItems = menuConfig.map((item) => (
+    <Link
+      to={item.to}
+      key={item.title}
       className="text-light flex w-full flex-row flex-nowrap items-center gap-2 rounded-sm
-        p-3 text-sm text-gray-400 transition-colors duration-300 ease-in-out
-        hover:bg-blue-600 hover:text-blue-200"
+        p-3 text-sm text-gray-400 transition-colors duration-300 ease-in-out"
+      activeProps={{ className: 'bg-blue-600 text-blue-200' }}
     >
       <Image className="h-5 w-5 shrink-0" />
       <span
         className={`text-nowrap ${props.showTitle ? 'opacity-100' : 'opacity-0'}
           transition-opacity duration-300 ease-in-out`}
       >
-        {item}
+        {item.title}
       </span>
-    </div>
+    </Link>
   ));
   return (
     <div

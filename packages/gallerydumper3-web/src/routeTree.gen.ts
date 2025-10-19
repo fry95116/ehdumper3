@@ -9,8 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './pages/__root';
+import { Route as Copy2RouteImport } from './pages/copy2';
+import { Route as CopyRouteImport } from './pages/copy';
 import { Route as IndexRouteImport } from './pages/index';
 
+const Copy2Route = Copy2RouteImport.update({
+  id: '/copy2',
+  path: '/copy2',
+  getParentRoute: () => rootRouteImport,
+} as any);
+const CopyRoute = CopyRouteImport.update({
+  id: '/copy',
+  path: '/copy',
+  getParentRoute: () => rootRouteImport,
+} as any);
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +31,50 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
+  '/copy': typeof CopyRoute;
+  '/copy2': typeof Copy2Route;
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
+  '/copy': typeof CopyRoute;
+  '/copy2': typeof Copy2Route;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
   '/': typeof IndexRoute;
+  '/copy': typeof CopyRoute;
+  '/copy2': typeof Copy2Route;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/';
+  fullPaths: '/' | '/copy' | '/copy2';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/';
-  id: '__root__' | '/';
+  to: '/' | '/copy' | '/copy2';
+  id: '__root__' | '/' | '/copy' | '/copy2';
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
+  CopyRoute: typeof CopyRoute;
+  Copy2Route: typeof Copy2Route;
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/copy2': {
+      id: '/copy2';
+      path: '/copy2';
+      fullPath: '/copy2';
+      preLoaderRoute: typeof Copy2RouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    '/copy': {
+      id: '/copy';
+      path: '/copy';
+      fullPath: '/copy';
+      preLoaderRoute: typeof CopyRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/': {
       id: '/';
       path: '/';
@@ -53,6 +87,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CopyRoute: CopyRoute,
+  Copy2Route: Copy2Route,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
