@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MideaService } from './core/service/media.service';
+import { MideaService } from './service/media.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from '../../common/config';
 

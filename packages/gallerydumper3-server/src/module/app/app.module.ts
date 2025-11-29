@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController } from './controller/http/app.controller';
+import { AppService } from './service/app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from '../../common/config';
 

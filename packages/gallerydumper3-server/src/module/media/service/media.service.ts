@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { MediaLibrary } from '../model/mediaLibrary';
 import { readdir } from 'fs/promises';
 
 @Injectable()

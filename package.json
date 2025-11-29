@@ -8,9 +8,11 @@
     "format": "nx run-many -t format",
     "lint": "nx run-many -t lint",
     "test": "nx run-many -t test",
+    "cov": "nx run-many -t cov",
     "clean": "nx run-many -t clean && rm -rf node_modules",
     "i:web": "npm install --prefix packages/gallerydumper3-web",
-    "i:server": "npm install --prefix packages/gallerydumper3-server"
+    "i:server": "npm install --prefix packages/gallerydumper3-server",
+    "test2": "NODE_TLS_REJECT_UNAUTHORIZED=0 node scripts/test.js"
   },
   "private": true,
   "devDependencies": {

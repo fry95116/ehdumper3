@@ -9,6 +9,25 @@ export const config = {
     entities: [],
     synchronize: true,
   },
+  leveldb: {
+    baseDir: './leveldb',
+    nodeCount: 10,
+  },
+  file: {
+    baseDir: './data',
+  },
+};
+
+export const TEST_CONFIG = {
+  ...config,
+  leveldb: {
+    ...config.leveldb,
+    baseDir: './fixture/leveldb',
+  },
+  file: {
+    ...config.file,
+    baseDirs: ['./fixture/data'],
+  },
 };
 
 export const getConfig = () => {
@@ -17,6 +36,8 @@ export const getConfig = () => {
   // } else {
   // process.env.NODE_ENV;
   // 根据环境变量或其他条件返回不同的配置
+  if (process.env.NODE_ENV === 'test') {
+    return TEST_CONFIG;
+  }
   return config;
-  // }
 };

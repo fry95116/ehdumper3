@@ -31,13 +31,13 @@ const Menu: React.FC<{ showTitle?: boolean; className?: string }> = (props) => {
     title: string;
   }> = [
     { to: '/', title: '测试1' },
-    { to: '/copy', title: '测试1' },
-    { to: '/copy2', title: '测试1' },
+    { to: '/copy', title: '测试2' },
+    { to: '/copy2', title: '测试3' },
   ];
   const menuItems = menuConfig.map((item) => (
     <Link
       to={item.to}
-      key={item.title}
+      key={item.to}
       className="text-light flex w-full flex-row flex-nowrap items-center gap-2 rounded-sm
         p-3 text-sm text-gray-400 transition-colors duration-300 ease-in-out"
       activeProps={{ className: 'bg-blue-600 text-blue-200' }}
