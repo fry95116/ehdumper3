@@ -1,4 +1,4 @@
-import { IMediaCreateParams, IMediaRestoreParams, Media } from './Media2';
+import { IMediaCreateParams, IMediaRestoreParams, Media } from './Media';
 
 interface ITarFileExtraParams {
   tarFilePath: string;
