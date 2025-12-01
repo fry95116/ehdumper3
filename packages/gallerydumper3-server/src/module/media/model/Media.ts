@@ -1,25 +1,28 @@
-import { createHash } from 'crypto';
-
 export enum MediaStorageTypeEnum {
   FILE = 'FILE',
-  TAR_FILE = 'TAR_FILE',
+  TAR = 'TAR',
 }
 
 export interface IMediaCreateParams {
-  folderName: string;
+  mediaLibraryId: string;
+  collectionName: string;
   fileName: string;
   ext: string;
   size: number;
+}
+
+export interface IMediaRestoreParams extends IMediaCreateParams {
+  mediaId: string;
   storageType: MediaStorageTypeEnum;
 }
 
-export interface IMediaRestoreParams extends IMediaCreateParams {}
-
-type IMediaConstructorParams = IMediaCreateParams;
-
-export class Media {
-  /** 媒体文件组名 */
-  folderName: string;
+export abstract class Media {
+  /** 媒体 ID */
+  mediaId: string;
+  /** 媒体库 ID */
+  mediaLibraryId: string;
+  /** 媒体目录名 */
+  collectionName: string;
   /** 媒体文件名 */
   fileName: string;
   /** 媒体文件扩展名 */
@@ -30,31 +33,12 @@ export class Media {
   storageType: MediaStorageTypeEnum;
 
   protected constructor(params: IMediaRestoreParams) {
-    this.folderName = params.folderName;
+    this.mediaId = params.mediaId;
+    this.mediaLibraryId = params.mediaLibraryId;
+    this.collectionName = params.collectionName;
     this.fileName = params.fileName;
     this.ext = params.ext;
     this.size = params.size;
     this.storageType = params.storageType;
-  }
-
-  get mediaId() {
-    const mediaId = createHash('md5').update(this.folderName).update(this.fileName).update(this.ext).digest('hex');
-    return mediaId;
-  }
-
-  static create(params: IMediaConstructorParams): Media {
-    const media = new Media({
-      folderName: params.folderName,
-      fileName: params.fileName,
-      ext: params.ext,
-      size: params.size,
-      storageType: params.storageType,
-    });
-    return media;
-  }
-
-  static restore(params: IMediaRestoreParams): Media {
-    const media = new Media(params);
-    return media;
   }
 }

@@ -1,22 +1,32 @@
-import { IMediaCreateParams, IMediaRestoreParams, Media } from './Media';
+import { genModelId } from '../../../common/uuid';
+import { IMediaCreateParams, IMediaRestoreParams, Media, MediaStorageTypeEnum } from './Media';
 
 interface IFileExtraParams {
   filePath: string;
 }
 export interface IFileMediaCreateParams extends IMediaCreateParams, IFileExtraParams {}
 export interface IFileMediaRestoreParams extends IMediaRestoreParams, IFileExtraParams {}
-type IFileMediaConstructorParams = IFileMediaRestoreParams;
+interface IFileMediaConstructorParams extends IFileMediaRestoreParams {}
 
 export class FileMedia extends Media {
   filePath: string;
 
-  constructor(params: IFileMediaConstructorParams) {
+  protected constructor(params: IFileMediaConstructorParams) {
     super(params);
     this.filePath = params.filePath;
   }
 
   static create(params: IFileMediaCreateParams): FileMedia {
-    const media = new FileMedia(params);
+    const media = new FileMedia({
+      mediaId: genModelId('MEDIA'),
+      mediaLibraryId: params.mediaLibraryId,
+      collectionName: params.collectionName,
+      fileName: params.fileName,
+      ext: params.ext,
+      size: params.size,
+      storageType: MediaStorageTypeEnum.FILE,
+      filePath: params.filePath,
+    });
     return media;
   }
 

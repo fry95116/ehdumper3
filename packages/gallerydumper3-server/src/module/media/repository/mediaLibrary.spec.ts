@@ -1,36 +1,50 @@
-// import { Test } from '@nestjs/testing';
-// import { MediaLibraryRepository } from './mediaLibrary';
-// import { MediaLibrary, MediaLibraryType } from '../model/mediaLibrary';
+import { Test } from '@nestjs/testing';
+import { MediaLibraryRepository } from './mediaLibrary';
+import { TarMediaLibrary } from '../model/TarMediaLibrary';
+import { DirectoryMediaLibrary } from '../model/DirectoryLibrary';
+import { LevelDAL } from '../dal/level';
+import { NotFoundError } from '../../../common/error';
+import { INestApplication } from '@nestjs/common';
+import { SQLDAL } from '../dal/sql';
 
-// describe('MediaLibraryRepository', () => {
-//   let repo: MediaLibraryRepository;
+describe('MediaLibraryRepository', () => {
+  let repo: MediaLibraryRepository;
+  let app: INestApplication<any>;
 
-//   beforeAll(async () => {
-//     const module = await Test.createTestingModule({
-//       providers: [MediaLibraryRepository],
-//     }).compile();
-//     const app = module.createNestApplication();
-//     await app.init();
-//     repo = module.get(MediaLibraryRepository);
-//   });
+  beforeAll(async () => {
+    const module = await Test.createTestingModule({
+      providers: [MediaLibraryRepository, SQLDAL],
+    }).compile();
+    app = module.createNestApplication();
+    await app.init();
+    repo = module.get(MediaLibraryRepository);
+  });
 
-//   it('save', async () => {
-//     const model = MediaLibrary.create({
-//       name: 'mock_name',
-//       rootPath: '/mock/path',
-//       type: MediaLibraryType.LOCAL_FS,
-//     });
+  afterAll(async () => {
+    await app.close();
+  });
 
-//     const model2 = MediaLibrary.create({
-//       name: 'mock_name2',
-//       rootPath: '/mock/path2',
-//       type: MediaLibraryType.LOCAL_TAR,
-//     });
+  it('保存并读取 TAR 类型媒体库', async () => {
+    const tar = TarMediaLibrary.create({
+      name: 'tar-lib',
+      filePath: '/path/to/file.tar',
+    });
+    await repo.save(tar);
+    const restored = await repo.findByMediaLibraryId(tar.mediaLibraryId);
+    expect(restored).toEqual(tar);
+  });
 
-//     await repo.save(model);
-//     await repo.save(model);
+  it('保存并读取 DIRECTORY 类型媒体库', async () => {
+    const dir = DirectoryMediaLibrary.create({
+      name: 'dir-lib',
+      baseDir: '/path/to/dir',
+    });
+    await repo.save(dir);
+    const restored = await repo.findByMediaLibraryId(dir.mediaLibraryId);
+    expect(restored).toEqual(dir);
+  });
 
-//     const saved = await repo.findByMediaLibraryId(model.mediaLibraryId);
-//     expect(saved).toStrictEqual(model);
-//   });
-// });
+  it('未找到媒体库时抛出 NotFoundError', async () => {
+    await expect(repo.findByMediaLibraryId('missing-id')).rejects.toBeInstanceOf(NotFoundError);
+  });
+});

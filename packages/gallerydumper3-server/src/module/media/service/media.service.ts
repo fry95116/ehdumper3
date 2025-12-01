@@ -1,16 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { readdir } from 'fs/promises';
+// import { readdir } from 'fs/promises';
 
 @Injectable()
 export class MideaService {
-  getHello(): string {
-    return 'Hello World!';
-  }
-
-  async scanLibrary(library: MediaLibrary) {
+  async scan() {
     // TODO: get path
-    const files = await readdir(library.rootPath);
-
-    return files;
+    // const files = await readdir(library.rootPath);
+    // return files;
   }
 }
