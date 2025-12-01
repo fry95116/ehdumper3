@@ -1,42 +1,31 @@
-import { genModelId } from '../../../common/uuid';
-import { IMediaCreateParams, IMediaRestoreParams, Media, MediaStorageTypeEnum } from './Media';
+import { IMediaCreateParams, IMediaRestoreParams, Media } from './Media';
 
-interface ITarMediaExtraParams {
+interface ITarFileExtraParams {
   tarFilePath: string;
   offset: number;
 }
 
-export interface ITarMediaCreateParams extends IMediaCreateParams, ITarMediaExtraParams {}
-export interface ITarMediaRestoreParams extends IMediaRestoreParams, ITarMediaExtraParams {}
-type ITarMediaConstructorParams = ITarMediaRestoreParams;
+export interface ITarFileCreateParams extends IMediaCreateParams, ITarFileExtraParams {}
+export interface ITarFileRestoreParams extends IMediaRestoreParams, ITarFileExtraParams {}
+type ITarFileConstructorParams = ITarFileRestoreParams;
 
-export class TarMedia extends Media {
+export class TarFileMedia extends Media {
   tarFilePath: string;
   offset: number;
 
-  constructor(params: ITarMediaConstructorParams) {
+  constructor(params: ITarFileConstructorParams) {
     super(params);
     this.tarFilePath = params.tarFilePath;
     this.offset = params.offset;
   }
 
-  static create(params: ITarMediaCreateParams): TarMedia {
-    const media = new TarMedia({
-      mediaId: genModelId('MEDIA'),
-      mediaLibraryId: params.mediaLibraryId,
-      collectionName: params.collectionName,
-      fileName: params.fileName,
-      ext: params.ext,
-      size: params.size,
-      storageType: MediaStorageTypeEnum.TAR,
-      tarFilePath: params.tarFilePath,
-      offset: params.offset,
-    });
+  static create(params: ITarFileCreateParams): TarFileMedia {
+    const media = new TarFileMedia(params);
     return media;
   }
 
-  static restore(params: ITarMediaRestoreParams) {
-    const media = new TarMedia(params);
+  static restore(params: ITarFileRestoreParams) {
+    const media = new TarFileMedia(params);
     return media;
   }
 }

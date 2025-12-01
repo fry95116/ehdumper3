@@ -1,85 +1,30 @@
-import { Injectable, OnModuleInit, OnModuleDestroy, Inject } from '@nestjs/common';
-import { LevelDAL, LevelUnitEnum } from '../dal/level';
-import { Media, MediaStorageTypeEnum } from '../model/Media';
-import { TarMedia } from '../model/TarMedia';
-import { FileMedia } from '../model/FileMedia';
-import { assertEnum, assertTruth } from 'src/common/assert';
-import { NotFoundError } from 'src/common/error';
-
-interface MediaDO {
-  mediaId: string;
-  mediaLibraryId: string;
-  fileName: string;
-  collectionName: string;
-  ext: string;
-  size: number;
-  storageType: string;
-  tarFilePath: string;
-  offset: number;
-  filePath: string;
-}
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Level } from 'level';
+import path from 'path';
+import { getConfig } from 'src/common/config';
+import { ConsistentHash } from 'src/common/consistentHash';
 
 @Injectable()
-export class MediaRepository {
-  @Inject()
-  private levelDAL: LevelDAL;
+export class MediaRepository implements OnModuleInit, OnModuleDestroy {
+  private nodes: ConsistentHash;
 
-  async save(model: Media) {
-    const dataObject: MediaDO = {
-      mediaId: model.mediaId,
-      mediaLibraryId: model.mediaLibraryId,
-      fileName: model.fileName,
-      collectionName: model.collectionName,
-      ext: model.ext,
-      size: model.size,
-      storageType: model.storageType,
-      tarFilePath: '',
-      offset: 0,
-      filePath: '',
-    };
-    if (model instanceof TarMedia) {
-      dataObject.tarFilePath = model.tarFilePath;
-      dataObject.offset = model.offset;
-    } else if (model instanceof FileMedia) {
-      dataObject.filePath = model.filePath;
-    }
+  private leveldbs: Record<string, Level>;
 
-    const key = `${dataObject.collectionName}/${dataObject.fileName}`;
-    const value = JSON.stringify(dataObject);
-    await this.levelDAL.put(LevelUnitEnum.Media, key, value);
-  }
-
-  async findOneByFolderAndFileName(collectionName: string, fileName: string): Promise<Media> {
-    const key = `${collectionName}/${fileName}`;
-    const rawData = await this.levelDAL.get(LevelUnitEnum.Media, key);
-    assertTruth(rawData, new NotFoundError('Media'));
-    const dataObject: MediaDO = JSON.parse(rawData);
-    assertEnum(dataObject.storageType, MediaStorageTypeEnum);
-
-    switch (dataObject.storageType) {
-      case MediaStorageTypeEnum.TAR:
-        return TarMedia.restore({
-          mediaId: dataObject.mediaId,
-          mediaLibraryId: dataObject.mediaLibraryId,
-          collectionName: dataObject.collectionName,
-          fileName: dataObject.fileName,
-          ext: dataObject.ext,
-          size: dataObject.size,
-          storageType: dataObject.storageType,
-          tarFilePath: dataObject.tarFilePath,
-          offset: dataObject.offset,
-        });
-      case MediaStorageTypeEnum.FILE:
-        return FileMedia.restore({
-          mediaId: dataObject.mediaId,
-          mediaLibraryId: dataObject.mediaLibraryId,
-          collectionName: dataObject.collectionName,
-          fileName: dataObject.fileName,
-          ext: dataObject.ext,
-          size: dataObject.size,
-          storageType: dataObject.storageType as any,
-          filePath: dataObject.filePath,
-        });
+  async onModuleInit() {
+    const { baseDir, nodeCount } = getConfig().leveldb;
+    this.nodes = new ConsistentHash();
+    for (let i = 0; i < nodeCount; i++) {
+      const subDir = path.join(baseDir, `node${i}`);
+      this.nodes.addNode(subDir);
+      this.leveldbs[subDir] = new Level(subDir);
     }
   }
+
+  async onModuleDestroy() {
+    await Promise.all(Object.values(this.leveldbs).map((db) => db.close()));
+  }
+
+  // async save(key: string): Promise<void> {
+  //   const node = this.nodes.getNode(key);
+  // }
 }

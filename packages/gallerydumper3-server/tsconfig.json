@@ -16,11 +16,6 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false,
-    "strict": true,
-    "paths": {
-      "@/module/media/*": ["./src/module/media/*"],
-      "@/common/*": ["./src/common/*"]
-    }
+    "noFallthroughCasesInSwitch": false
   }
 }

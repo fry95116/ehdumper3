@@ -1,17 +1,17 @@
 export const config = {
   database: {
-    client: 'mysql',
-    connection: {
-      host: '192.168.2.225',
-      port: 3306,
-      user: 'root',
-      password: 'abc7758258',
-      database: 'eh_dumper3_dev',
-    },
+    type: 'mysql' as const,
+    host: '192.168.2.225',
+    port: 3306,
+    username: 'root',
+    password: 'abc7758258',
+    database: 'ehdumper3_dev',
+    entities: [],
+    synchronize: true,
   },
   leveldb: {
     baseDir: './leveldb',
-    nodeCount: { media: 10 },
+    nodeCount: 10,
   },
   file: {
     baseDir: './data',
@@ -22,7 +22,7 @@ export const TEST_CONFIG = {
   ...config,
   leveldb: {
     ...config.leveldb,
-    baseDir: './fixture/tmp/leveldb',
+    baseDir: './fixture/leveldb',
   },
   file: {
     ...config.file,

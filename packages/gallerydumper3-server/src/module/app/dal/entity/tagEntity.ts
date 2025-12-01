@@ -1,5 +1,5 @@
 import { Column, Entity, Index } from 'typeorm';
-import { BaseEntity } from '@/common/baseEntity';
+import { BaseEntity } from './baseEntity';
 
 @Index(['type', 'name', 'lowPower'])
 @Index(['type', 'name'])
