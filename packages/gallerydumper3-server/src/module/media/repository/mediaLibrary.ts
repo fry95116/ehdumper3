@@ -1,12 +1,12 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { MediaLibrary, MediaLibraryTypeEnum } from '@/module/media/model/MediaLibrary';
-import { TarMediaLibrary } from '@/module/media/model/TarMediaLibrary';
-import { DirectoryMediaLibrary } from '@/module/media/model/DirectoryLibrary';
+import { MediaLibrary, MediaLibraryTypeEnum } from '../../../module/media/model/MediaLibrary';
+import { TarMediaLibrary } from '../../../module/media/model/TarMediaLibrary';
+import { DirectoryMediaLibrary } from '../../../module/media/model/DirectoryLibrary';
 
-import { NotFoundError } from '@/common/error';
-import { assertEnum, assertTruth } from '@/common/assert';
-import { LevelDAL } from '../dal/level';
-import { MediaLibraryDO, MediaLibraryNewDO, SQLDAL } from '../dal/sql';
+import { NotFoundError } from '../../../common/error';
+import { assertEnum, assertTruth } from '../../../common/assert';
+import { MediaLibraryNewDO, SQLDAL } from '../dal/sql';
+import { safeJsonParse } from '../../../common/json';
 
 @Injectable()
 export class MediaLibraryRepository {
@@ -14,18 +14,7 @@ export class MediaLibraryRepository {
   private sqlDAL: SQLDAL;
 
   async save(model: MediaLibrary): Promise<void> {
-    const dataObject: MediaLibraryNewDO = {
-      media_library_id: model.mediaLibraryId,
-      name: model.name,
-      type: model.type,
-      writable: model.writable ? 1 : 0,
-    };
-    if (model instanceof TarMediaLibrary) {
-      dataObject.ext_info = JSON.stringify({ filePath: model.filePath });
-    }
-    if (model instanceof DirectoryMediaLibrary) {
-      dataObject.ext_info = JSON.stringify({ baseDir: model.baseDir });
-    }
+    const dataObject: MediaLibraryNewDO = model2DataObject(model);
 
     const founded = await this.sqlDAL.dataSource
       .selectFrom('mediaLibrary')
@@ -43,32 +32,61 @@ export class MediaLibraryRepository {
     await this.sqlDAL.dataSource.insertInto('mediaLibrary').values(dataObject).execute();
   }
 
-  async findByMediaLibraryId(mediaLibraryId: string): Promise<MediaLibrary> {
-    const dataObject = await this.sqlDAL.dataSource
+  async findOneByMediaLibraryId(mediaLibraryId: string): Promise<MediaLibrary> {
+    const founded = await this.sqlDAL.dataSource
       .selectFrom('mediaLibrary')
       .selectAll()
       .where('media_library_id', '=', mediaLibraryId)
       .executeTakeFirst();
-    assertTruth(dataObject, new NotFoundError('MediaLibrary'));
 
-    assertEnum(dataObject.type, MediaLibraryTypeEnum);
-    switch (dataObject.type) {
-      case MediaLibraryTypeEnum.TAR:
-        return TarMediaLibrary.restore({
-          mediaLibraryId: dataObject.media_library_id,
-          name: dataObject.name,
-          type: dataObject.type,
-          filePath: dataObject.ext_info.filePath,
-          writable: dataObject.writable,
-        });
-      case MediaLibraryTypeEnum.DIRECTORY:
-        return DirectoryMediaLibrary.restore({
-          mediaLibraryId: dataObject.media_library_id,
-          name: dataObject.name,
-          type: dataObject.type,
-          baseDir: dataObject.ext_info.baseDir,
-          writable: dataObject.writable,
-        });
+    assertTruth(founded, new NotFoundError('MediaLibrary'));
+    return dataObject2Model(founded);
+  }
+}
+
+function model2DataObject(model: MediaLibrary) {
+  const ext_info = JSON.stringify(model.extInfo);
+  const dataObject: MediaLibraryNewDO = {
+    media_library_id: model.mediaLibraryId,
+    name: model.name,
+    type: model.type,
+    writable: model.writable ? 1 : 0,
+    ext_info,
+  };
+  return dataObject;
+}
+
+function dataObject2Model(dataObject: {
+  id: number;
+  created_at: Date;
+  updated_at: Date;
+  media_library_id: string;
+  name: string;
+  type: MediaLibraryTypeEnum;
+  writable: number;
+  ext_info: MediaLibraryTypeEnum;
+}) {
+  assertEnum(dataObject.type, MediaLibraryTypeEnum);
+  switch (dataObject.type) {
+    case MediaLibraryTypeEnum.TAR: {
+      const extInfo = safeJsonParse<{ filePath?: string }>(dataObject.ext_info, {});
+      return TarMediaLibrary.restore({
+        mediaLibraryId: dataObject.media_library_id,
+        name: dataObject.name,
+        type: dataObject.type,
+        filePath: extInfo.filePath,
+        writable: dataObject.writable !== 0,
+      });
+    }
+    case MediaLibraryTypeEnum.DIRECTORY: {
+      const extInfo = safeJsonParse<{ baseDir?: string }>(dataObject.ext_info, {});
+      return DirectoryMediaLibrary.restore({
+        mediaLibraryId: dataObject.media_library_id,
+        name: dataObject.name,
+        type: dataObject.type,
+        baseDir: extInfo.baseDir,
+        writable: dataObject.writable !== 0,
+      });
     }
   }
 }

@@ -27,4 +27,8 @@ export abstract class MediaLibrary {
     this.type = params.type;
     this.writable = params.writable;
   }
+
+  get extInfo() {
+    return {};
+  }
 }

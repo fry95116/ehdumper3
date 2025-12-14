@@ -1,3 +1,4 @@
+import { assertTruth } from '../../../common/assert';
 import { genModelId } from '../../../common/uuid';
 import {
   IMediaLibraryCreateParams,
@@ -20,6 +21,17 @@ export class DirectoryMediaLibrary extends MediaLibrary {
   protected constructor(params: IDirectoryMediaLibraryRestoreParams) {
     super(params);
     this.baseDir = params.baseDir;
+  }
+
+  get extInfo() {
+    return {
+      baseDir: this.baseDir,
+    };
+  }
+
+  set extInfo(value: { baseDir: string }) {
+    assertTruth(!!value.baseDir, 'baseDir is required in extInfo');
+    this.baseDir = value.baseDir;
   }
 
   static create(params: IDirectoryMediaLibraryCreateParams): DirectoryMediaLibrary {

@@ -5,7 +5,6 @@ import * as path from 'node:path';
 import { getConfig } from '../../../common/config';
 import { assertTruth } from '../../../common/assert';
 import { DALError } from '../../../common/error';
-import { constants } from 'node:buffer';
 
 export enum LevelUnitEnum {
   Media = 'media',
@@ -64,11 +63,8 @@ export class LevelDAL implements OnModuleInit, OnModuleDestroy {
           : `${leveldbConfig.baseDir}_${Date.now()}`;
     }
     this.unitMap = {
-      [LevelUnitEnum.Media]: new LevelUnit(
-        LevelUnitEnum.Media,
-        baseDir,
-        leveldbConfig.nodeCount?.media ?? 1,
-        (key: string) => key.split('/').slice(0, 2).join('/'),
+      [LevelUnitEnum.Media]: new LevelUnit(LevelUnitEnum.Media, baseDir, leveldbConfig.nodeCount ?? 1, (key: string) =>
+        key.split('/').slice(0, 2).join('/'),
       ),
     };
   }
@@ -114,7 +110,7 @@ export class LevelDAL implements OnModuleInit, OnModuleDestroy {
         let started = !from; // 未提供 from 时，直接从第一个分区开始
         for (const level of levels) {
           // 计算该分区的起始 gte
-          let opts: IteratorOptions<string, string> = {};
+          const opts: IteratorOptions<string, string> = {};
           if (!started && from) {
             // 仅在尚未开始且提供 from 时，尝试定位该分区是否包含 from
             try {

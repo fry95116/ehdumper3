@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { getConfig } from 'src/common/config';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { Dir } from 'fs';
 import { DirectoryMediaLibrary } from '../model/DirectoryLibrary';
 import { MediaLibraryRepository } from '../repository/mediaLibrary';
 import { TarMediaLibrary } from '../model/TarMediaLibrary';

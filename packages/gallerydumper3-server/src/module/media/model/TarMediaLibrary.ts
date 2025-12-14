@@ -1,3 +1,4 @@
+import { assertTruth } from '../../../common/assert';
 import { genModelId } from '../../../common/uuid';
 import {
   IMediaLibraryCreateParams,
@@ -18,6 +19,17 @@ export class TarMediaLibrary extends MediaLibrary {
   protected constructor(params: ITarMediaLibraryRestoreParams) {
     super(params);
     this.filePath = params.filePath;
+  }
+
+  get extInfo() {
+    return {
+      filePath: this.filePath,
+    };
+  }
+
+  set extInfo(value: { filePath: string }) {
+    assertTruth(!!value.filePath, 'filePath is required in extInfo');
+    this.filePath = value.filePath;
   }
 
   static create(params: ITarMediaLibraryCreateParams): TarMediaLibrary {

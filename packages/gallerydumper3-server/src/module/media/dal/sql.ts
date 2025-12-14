@@ -1,10 +1,8 @@
-import { getConfig } from '@/common/config';
+import { getConfig } from '../../../common/config';
 import {
   ColumnType,
-  FileMigrationProvider,
   Generated,
   Insertable,
-  JSONColumnType,
   Kysely,
   Migration,
   Migrator,
@@ -16,7 +14,7 @@ import {
 import { MediaLibraryTypeEnum } from '../model/MediaLibrary';
 import { createPool } from 'mysql2';
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { InlineMigrationProvider } from '@/common/migrationProvider';
+import { InlineMigrationProvider } from '../../../common/migrationProvider';
 
 export interface Database {
   mediaLibrary: MediaLibraryTable;
@@ -31,12 +29,9 @@ export interface MediaLibraryTable {
   media_library_id: string;
   name: string;
   type: ColumnType<MediaLibraryTypeEnum, string, string>;
-  writable: ColumnType<boolean, number, number>;
+  writable: ColumnType<number, number, number>;
 
-  ext_info: JSONColumnType<{
-    filePath: string;
-    baseDir: string;
-  }>;
+  ext_info: ColumnType<MediaLibraryTypeEnum, string, string>;
 }
 
 export type MediaLibraryDO = Selectable<MediaLibraryTable>;
@@ -71,7 +66,15 @@ export class SQLDAL implements OnModuleInit {
   async onModuleInit() {
     const dbConfig = getConfig();
 
-    const dialect = new MysqlDialect({ pool: createPool(dbConfig.database.connection) });
+    const dialect = new MysqlDialect({
+      pool: createPool({
+        host: dbConfig.database.host,
+        port: dbConfig.database.port,
+        user: dbConfig.database.user,
+        password: dbConfig.database.password,
+        database: dbConfig.database.database,
+      }),
+    });
     this.db = new Kysely<Database>({ dialect });
 
     const migrator = new Migrator({
