@@ -15,9 +15,8 @@ export interface IMediaCreateParams {
 
 export interface IMediaRestoreParams extends IMediaCreateParams {}
 
-type IMediaConstructorParams = IMediaCreateParams;
-
 export class Media {
+  mediaLibraryId: string;
   /** 媒体文件组名 */
   folderName: string;
   /** 媒体文件名 */
@@ -42,19 +41,19 @@ export class Media {
     return mediaId;
   }
 
-  static create(params: IMediaConstructorParams): Media {
-    const media = new Media({
-      folderName: params.folderName,
-      fileName: params.fileName,
-      ext: params.ext,
-      size: params.size,
-      storageType: params.storageType,
-    });
-    return media;
-  }
+  // static create(params: IMediaConstructorParams): Media {
+  //   const media = new Media({
+  //     folderName: params.folderName,
+  //     fileName: params.fileName,
+  //     ext: params.ext,
+  //     size: params.size,
+  //     storageType: params.storageType,
+  //   });
+  //   return media;
+  // }
 
-  static restore(params: IMediaRestoreParams): Media {
-    const media = new Media(params);
-    return media;
-  }
+  // static restore(params: IMediaRestoreParams): Media {
+  //   const media = new Media(params);
+  //   return media;
+  // }
 }

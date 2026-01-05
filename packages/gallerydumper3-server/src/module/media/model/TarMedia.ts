@@ -1,4 +1,4 @@
-import { IMediaCreateParams, IMediaRestoreParams, Media } from './Media';
+import { IMediaCreateParams, IMediaRestoreParams, Media, MediaStorageTypeEnum } from './Media';
 
 interface ITarFileExtraParams {
   tarFilePath: string;
@@ -20,7 +20,15 @@ export class TarFileMedia extends Media {
   }
 
   static create(params: ITarFileCreateParams): TarFileMedia {
-    const media = new TarFileMedia(params);
+    const media = new TarFileMedia({
+      folderName: params.folderName,
+      fileName: params.fileName,
+      ext: params.ext,
+      size: params.size,
+      storageType: MediaStorageTypeEnum.TAR_FILE,
+      tarFilePath: params.tarFilePath,
+      offset: params.offset,
+    });
     return media;
   }
 

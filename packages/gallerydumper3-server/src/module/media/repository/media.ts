@@ -1,30 +1,49 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { Level } from 'level';
-import path from 'path';
-import { getConfig } from 'src/common/config';
-import { ConsistentHash } from 'src/common/consistentHash';
+import { Injectable, Inject } from '@nestjs/common';
+import { LevelDAL, LevelUnitEnum } from '../dal/level';
+import { Media, MediaStorageTypeEnum } from '../model/Media';
+import { safeJsonParse } from 'src/common/json';
+import { FileMedia } from '../model/FileMedia';
+import { TarFileMedia } from '../model/TarMedia';
 
 @Injectable()
-export class MediaRepository implements OnModuleInit, OnModuleDestroy {
-  private nodes: ConsistentHash;
+export class MediaRepository {
+  @Inject()
+  private readonly leveldal: LevelDAL;
 
-  private leveldbs: Record<string, Level>;
+  async findById(mediaId: string): Promise<Media> {
+    const founded = await this.leveldal.get(LevelUnitEnum.Media, mediaId);
+    const parsedDataObject = safeJsonParse<any>(founded, {});
+    if (parsedDataObject.storageType === MediaStorageTypeEnum.FILE) {
+      // TODO: validate
+      return FileMedia.restore(parsedDataObject);
+    } else if (parsedDataObject.storageType === MediaStorageTypeEnum.TAR_FILE) {
+      return TarFileMedia.restore(parsedDataObject);
+    }
+    throw new Error(`Unsupported media storage type: ${parsedDataObject.storageType}`);
+  }
 
-  async onModuleInit() {
-    const { baseDir, nodeCount } = getConfig().leveldb;
-    this.nodes = new ConsistentHash();
-    for (let i = 0; i < nodeCount; i++) {
-      const subDir = path.join(baseDir, `node${i}`);
-      this.nodes.addNode(subDir);
-      this.leveldbs[subDir] = new Level(subDir);
+  async save(data: Media): Promise<void> {
+    if (data instanceof FileMedia) {
+      const dataObject = {
+        folderName: data.folderName,
+        fileName: data.fileName,
+        ext: data.ext,
+        size: data.size,
+        storageType: data.storageType,
+        filePath: data.filePath,
+      };
+      await this.leveldal.put(LevelUnitEnum.Media, data.mediaId, JSON.stringify(dataObject));
+    } else if (data instanceof TarFileMedia) {
+      const dataObject = {
+        folderName: data.folderName,
+        fileName: data.fileName,
+        ext: data.ext,
+        size: data.size,
+        storageType: data.storageType,
+        tarFilePath: data.tarFilePath,
+        offset: data.offset,
+      };
+      await this.leveldal.put(LevelUnitEnum.Media, data.mediaId, JSON.stringify(dataObject));
     }
   }
-
-  async onModuleDestroy() {
-    await Promise.all(Object.values(this.leveldbs).map((db) => db.close()));
-  }
-
-  // async save(key: string): Promise<void> {
-  //   const node = this.nodes.getNode(key);
-  // }
 }
