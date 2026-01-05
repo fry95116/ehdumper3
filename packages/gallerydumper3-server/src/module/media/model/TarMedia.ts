@@ -21,9 +21,8 @@ export class TarFileMedia extends Media {
 
   static create(params: ITarFileCreateParams): TarFileMedia {
     const media = new TarFileMedia({
-      folderName: params.folderName,
-      fileName: params.fileName,
-      ext: params.ext,
+      mediaLibraryId: params.mediaLibraryId,
+      filepath: params.filepath,
       size: params.size,
       storageType: MediaStorageTypeEnum.TAR_FILE,
       tarFilePath: params.tarFilePath,

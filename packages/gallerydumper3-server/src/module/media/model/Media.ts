@@ -6,9 +6,8 @@ export enum MediaStorageTypeEnum {
 }
 
 export interface IMediaCreateParams {
-  folderName: string;
-  fileName: string;
-  ext: string;
+  mediaLibraryId: string;
+  filepath: string;
   size: number;
   storageType: MediaStorageTypeEnum;
 }
@@ -17,27 +16,27 @@ export interface IMediaRestoreParams extends IMediaCreateParams {}
 
 export class Media {
   mediaLibraryId: string;
-  /** 媒体文件组名 */
-  folderName: string;
   /** 媒体文件名 */
-  fileName: string;
-  /** 媒体文件扩展名 */
-  ext: string;
+  filepath: string;
   /** 媒体文件大小，单位字节 */
   size: number;
   /** 媒体文件存储类型 */
   storageType: MediaStorageTypeEnum;
 
   protected constructor(params: IMediaRestoreParams) {
-    this.folderName = params.folderName;
-    this.fileName = params.fileName;
-    this.ext = params.ext;
+    this.mediaLibraryId = params.mediaLibraryId;
+    this.filepath = params.filepath;
     this.size = params.size;
     this.storageType = params.storageType;
   }
 
+  get ext() {
+    const parts = this.filepath.split('.');
+    return parts.length === 1 ? '' : parts[parts.length - 1];
+  }
+
   get mediaId() {
-    const mediaId = createHash('md5').update(this.folderName).update(this.fileName).update(this.ext).digest('hex');
+    const mediaId = createHash('md5').update(this.filepath).digest('hex');
     return mediaId;
   }
 
